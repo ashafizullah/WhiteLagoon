@@ -38,6 +38,7 @@ public class VillaController : Controller
             _db.Villas.Add(villa);
             _db.SaveChanges();
             
+            TempData["success"] = "Villa updated successfully";
             return RedirectToAction("Index");
         }
 
@@ -65,9 +66,12 @@ public class VillaController : Controller
         {
             _db.Villas.Update(villa);
             _db.SaveChanges();
+            
+            TempData["success"] = "Villa updated successfully";
             return RedirectToAction("Index");
         }
-
+        
+        TempData["error"] = "Villa could not be updated";
         return View(villa);
     }
 
@@ -80,7 +84,7 @@ public class VillaController : Controller
             return RedirectToAction("Error", "Home");
         }
 
-        return View();
+        return View(villa);
     }
 
     [HttpPost]
@@ -92,9 +96,12 @@ public class VillaController : Controller
         {
             _db.Villas.Remove(checkVilla);
             _db.SaveChanges();
+            TempData["success"] = "Villa deleted successfully";
+            
             return RedirectToAction("Index");
         }
-
+        
+        TempData["error"] = "Villa could not be deleted";
         return View();
     }
 }
