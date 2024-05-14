@@ -38,7 +38,7 @@ public class VillaController : Controller
             _db.Villas.Add(villa);
             _db.SaveChanges();
             
-            TempData["success"] = "Villa updated successfully";
+            TempData["success"] = "Villa has been saved successfully";
             return RedirectToAction("Index");
         }
 
@@ -67,7 +67,7 @@ public class VillaController : Controller
             _db.Villas.Update(villa);
             _db.SaveChanges();
             
-            TempData["success"] = "Villa updated successfully";
+            TempData["success"] = "Villa has beed updated successfully";
             return RedirectToAction("Index");
         }
         
@@ -96,7 +96,7 @@ public class VillaController : Controller
         {
             _db.Villas.Remove(checkVilla);
             _db.SaveChanges();
-            TempData["success"] = "Villa deleted successfully";
+            TempData["success"] = "Villa has been deleted successfully";
             
             return RedirectToAction("Index");
         }
