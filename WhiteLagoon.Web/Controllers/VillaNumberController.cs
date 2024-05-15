@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using WhiteLagoon.Domain.Entities;
 using WhiteLagoon.Infrastructure.Data;
 using WhiteLagoon.Web.ViewModels;
@@ -17,7 +18,7 @@ public class VillaNumberController : Controller
 
     public IActionResult Index()
     {
-        var villaNumbers = _db.VillaNumbers.ToList();
+        var villaNumbers = _db.VillaNumbers.Include(x => x.Villa).ToList();
         return View(villaNumbers);
     }
 
@@ -36,19 +37,31 @@ public class VillaNumberController : Controller
     }
 
     [HttpPost]
-    public IActionResult Create(VillaNumber villaNumber)
+    public IActionResult Create(VillaNumberVM villaNumberVm)
     {
         //ModelState.Remove("Villa");
+        bool checkVillaNumber = _db.VillaNumbers.Any(x => x.Villa_Number == villaNumberVm.VillaNumber.Villa_Number);
         
-        if (ModelState.IsValid)
+        if (ModelState.IsValid && !checkVillaNumber)
         {
-            _db.VillaNumbers.Add(villaNumber);
+            _db.VillaNumbers.Add(villaNumberVm.VillaNumber);
             _db.SaveChanges();
             TempData["success"] = "Villa number has been saved successfully";
 
             return RedirectToAction("Index");
         }
+        
+        if (checkVillaNumber)
+        {
+            TempData["error"] = "The villa number is already exists";
+        }
 
-        return View();
+        villaNumberVm.VillaList = _db.Villas.ToList().Select(x => new SelectListItem
+        {
+            Text = x.Name,
+            Value = x.Id.ToString()
+        });
+
+        return View(villaNumberVm);
     }
 }
